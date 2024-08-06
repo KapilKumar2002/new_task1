@@ -1,5 +1,9 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:google_sign_in/google_sign_in.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:trial_task_01/constants/constants.dart';
+import 'package:trial_task_01/views/auth/login_screen.dart';
 
 class UserProfileScreen extends StatefulWidget {
   const UserProfileScreen({super.key});
@@ -9,6 +13,14 @@ class UserProfileScreen extends StatefulWidget {
 }
 
 class _UserProfileScreenState extends State<UserProfileScreen> {
+  Future<bool> logout() async {
+    final SharedPreferences prefs = await SharedPreferences.getInstance();
+    await prefs.setBool('isLoggedIn', false);
+    await FirebaseAuth.instance.signOut();
+    await GoogleSignIn().signOut();
+    return true;
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -109,7 +121,18 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
                       color: dividerGrey,
                     ),
                   ),
-                  TextButton(onPressed: () {}, child: Text("Logout"))
+                  TextButton(
+                      onPressed: () {
+                        logout().then((value) {
+                          if (value) {
+                            removeNextScreen(context, const LoginScreen());
+                          }
+                        });
+                      },
+                      child: Text(
+                        "Logout",
+                        style: font16w600(),
+                      ))
                 ],
               )
             ],

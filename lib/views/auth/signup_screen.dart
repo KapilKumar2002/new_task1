@@ -153,7 +153,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                   ),
                   InkWell(
                     onTap: () {
-                      nextScreen(context, const LoginScreen());
+                      removeNextScreen(context, const LoginScreen());
                     },
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.center,

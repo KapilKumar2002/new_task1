@@ -47,11 +47,12 @@ TextStyle font10w600() {
       fontFamily: "Roboto");
 }
 
-TextStyle font12w400() {
-  return const TextStyle(
+TextStyle font12w400({double? height}) {
+  return TextStyle(
       fontSize: 12,
       fontWeight: FontWeight.w400,
       color: grey,
+      height: height,
       fontFamily: "Roboto");
 }
 
@@ -63,10 +64,26 @@ TextStyle font12w500() {
       fontFamily: "Roboto");
 }
 
+TextStyle font22w500({Color? color}) {
+  return TextStyle(
+      fontSize: 22,
+      fontWeight: FontWeight.w500,
+      color: color ?? grey,
+      fontFamily: "Roboto");
+}
+
 TextStyle font10w500({Color? color}) {
   return TextStyle(
       fontSize: 10,
       fontWeight: FontWeight.w500,
+      color: color ?? black,
+      fontFamily: "Roboto");
+}
+
+TextStyle font80w600({Color? color}) {
+  return TextStyle(
+      fontSize: 80,
+      fontWeight: FontWeight.w600,
       color: color ?? black,
       fontFamily: "Roboto");
 }
@@ -89,11 +106,19 @@ TextStyle font14w500({Color? color, bool? underline}) {
   );
 }
 
-TextStyle font16w500() {
-  return const TextStyle(
+TextStyle font16w500({Color? color}) {
+  return TextStyle(
       fontSize: 16,
       fontWeight: FontWeight.w500,
-      color: black,
+      color: color ?? black,
+      fontFamily: "Roboto");
+}
+
+TextStyle font16w600({Color? color}) {
+  return TextStyle(
+      fontSize: 16,
+      fontWeight: FontWeight.w600,
+      color: color ?? black,
       fontFamily: "Roboto");
 }
 
@@ -131,6 +156,7 @@ const Color dividerGrey = Color(0xFFB6B6B6);
 const Color grey = Color(0xFF737373);
 const Color transparent = Colors.transparent;
 const Color lightGray = Color(0xFFF1F1F1);
+const Color darkGray = Color(0xFF999999);
 const Color errorColor = Color(0xFFFF3D00);
 
 toast(String message) {

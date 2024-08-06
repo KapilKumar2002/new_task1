@@ -5,6 +5,7 @@ import 'package:google_sign_in/google_sign_in.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:trial_task_01/constants/constants.dart';
 import 'package:trial_task_01/views/auth/login_screen.dart';
+import 'package:trial_task_01/views/exercises/endurablast_screen.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -15,13 +16,6 @@ class HomeScreen extends StatefulWidget {
 
 class _HomeScreenState extends State<HomeScreen> {
   int day = 1;
-  Future<bool> logout() async {
-    final SharedPreferences prefs = await SharedPreferences.getInstance();
-    await prefs.setBool('isLoggedIn', false);
-    await FirebaseAuth.instance.signOut();
-    await GoogleSignIn().signOut();
-    return true;
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -43,20 +37,6 @@ class _HomeScreenState extends State<HomeScreen> {
                       "Day 1 of 30",
                       style: font24w700(color: white),
                     ),
-                    IconButton(
-                        onPressed: () {
-                          logout().then((value) {
-                            if (value) {
-                              nextScreen(context, const LoginScreen());
-                            }
-                          });
-                        },
-                        icon: const ImageIcon(
-                          AssetImage(
-                            "assets/images/exit.png",
-                          ),
-                          color: white,
-                        ))
                   ],
                 ),
               ),
@@ -174,7 +154,9 @@ class _HomeScreenState extends State<HomeScreen> {
                       height: 20,
                     ),
                     ElevatedButton(
-                      onPressed: () {},
+                      onPressed: () {
+                        nextScreen(context, const EnduraScreen());
+                      },
                       style: ElevatedButton.styleFrom(
                           backgroundColor: black,
                           minimumSize: Size(width(context), 39)),
