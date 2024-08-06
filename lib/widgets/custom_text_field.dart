@@ -20,6 +20,14 @@ class CustomTextField extends StatefulWidget {
 }
 
 class _CustomTextFieldState extends State<CustomTextField> {
+  bool isObscure = false;
+  @override
+  void initState() {
+    // TODO: implement initState
+    isObscure = widget.obscure;
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Column(
@@ -36,7 +44,7 @@ class _CustomTextFieldState extends State<CustomTextField> {
         TextFormField(
           validator: widget.validator,
           controller: widget.controller,
-          obscureText: widget.obscure,
+          obscureText: isObscure,
           decoration: InputDecoration(
             hintText: widget.hintText,
             errorStyle: font10w500(color: errorColor),
@@ -54,8 +62,14 @@ class _CustomTextFieldState extends State<CustomTextField> {
                 borderSide: const BorderSide(color: dividerGrey)),
             suffixIcon: widget.obscure
                 ? IconButton(
-                    onPressed: () {},
-                    icon: const Icon(Icons.remove_red_eye_outlined))
+                    onPressed: () {
+                      setState(() {
+                        isObscure = !isObscure;
+                      });
+                    },
+                    icon: isObscure
+                        ? const Icon(Icons.remove_red_eye)
+                        : const Icon(Icons.remove_red_eye_outlined))
                 : null,
           ),
         )

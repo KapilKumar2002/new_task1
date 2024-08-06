@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 
 height(BuildContext context) {
   return MediaQuery.sizeOf(context).height;
@@ -11,6 +12,11 @@ width(BuildContext context) {
 nextScreen(BuildContext context, Widget screen) {
   return Navigator.push(
       context, MaterialPageRoute(builder: (context) => screen));
+}
+
+removeNextScreen(BuildContext context, Widget screen) {
+  return Navigator.pushAndRemoveUntil(context,
+      MaterialPageRoute(builder: (context) => screen), (route) => false);
 }
 
 goBack(BuildContext context) {
@@ -45,6 +51,14 @@ TextStyle font12w400() {
   return const TextStyle(
       fontSize: 12,
       fontWeight: FontWeight.w400,
+      color: grey,
+      fontFamily: "Roboto");
+}
+
+TextStyle font12w500() {
+  return const TextStyle(
+      fontSize: 12,
+      fontWeight: FontWeight.w500,
       color: grey,
       fontFamily: "Roboto");
 }
@@ -118,3 +132,14 @@ const Color grey = Color(0xFF737373);
 const Color transparent = Colors.transparent;
 const Color lightGray = Color(0xFFF1F1F1);
 const Color errorColor = Color(0xFFFF3D00);
+
+toast(String message) {
+  return Fluttertoast.showToast(
+      msg: message,
+      toastLength: Toast.LENGTH_SHORT,
+      gravity: ToastGravity.BOTTOM,
+      timeInSecForIosWeb: 1,
+      backgroundColor: black,
+      textColor: white,
+      fontSize: 16.0);
+}

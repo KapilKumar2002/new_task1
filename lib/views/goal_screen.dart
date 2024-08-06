@@ -1,3 +1,5 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:trial_task_01/constants/constants.dart';
 import 'package:trial_task_01/views/character_screen.dart';
@@ -39,6 +41,7 @@ class _GoalScreenState extends State<GoalScreen> {
       "goal": "assets/images/goal5.png",
     },
   ];
+  final user = FirebaseAuth.instance.currentUser;
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -102,8 +105,16 @@ class _GoalScreenState extends State<GoalScreen> {
               Padding(
                 padding: const EdgeInsets.only(bottom: 20),
                 child: ElevatedButton(
-                  onPressed: () {
-                    nextScreen(context, const CharacterScreen());
+                  onPressed: () async {
+                    if (_selectedValue > 0) {
+                      await FirebaseFirestore.instance
+                          .collection("users")
+                          .doc(user!.uid)
+                          .update({
+                        "goal": goals[_selectedValue]['title']
+                      }).then((value) => removeNextScreen(
+                              context, const CharacterScreen()));
+                    }
                   },
                   style: ElevatedButton.styleFrom(
                       backgroundColor: black,

@@ -1,6 +1,8 @@
 import 'dart:async';
-
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import 'package:trial_task_01/views/bottom_navigation.dart';
 import 'package:trial_task_01/views/onboarding_screen.dart';
 
 class SplashScreen extends StatefulWidget {
@@ -11,13 +13,26 @@ class SplashScreen extends StatefulWidget {
 }
 
 class _SplashScreenState extends State<SplashScreen> {
-  void getScreen() {
-    Timer(
-        const Duration(seconds: 4),
-        () => Navigator.pushAndRemoveUntil(
-            context,
-            MaterialPageRoute(builder: (context) => const OnBoardingScreen()),
-            (route) => false));
+  final user = FirebaseAuth.instance.currentUser;
+  void getScreen() async {
+    final SharedPreferences prefs = await SharedPreferences.getInstance();
+    final bool? isLoggedIn = await prefs.getBool('isLoggedIn');
+    if (isLoggedIn == true) {
+      Timer(
+          const Duration(seconds: 4),
+          () => Navigator.pushAndRemoveUntil(
+              context,
+              MaterialPageRoute(
+                  builder: (context) => const BottomNavigationScreen()),
+              (route) => false));
+    } else {
+      Timer(
+          const Duration(seconds: 4),
+          () => Navigator.pushAndRemoveUntil(
+              context,
+              MaterialPageRoute(builder: (context) => const OnBoardingScreen()),
+              (route) => false));
+    }
   }
 
   @override

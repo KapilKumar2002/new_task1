@@ -122,7 +122,7 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
               padding: const EdgeInsets.only(bottom: 20),
               child: ElevatedButton(
                 onPressed: () {
-                  nextScreen(context, const GoalScreen());
+                  removeNextScreen(context, const GoalScreen());
                 },
                 style: ElevatedButton.styleFrom(
                     backgroundColor: black,

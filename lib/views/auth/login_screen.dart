@@ -1,5 +1,7 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:trial_task_01/constants/constants.dart';
 import 'package:trial_task_01/views/auth/signup_screen.dart';
 import 'package:trial_task_01/views/forgot/reset_screen.dart';
@@ -21,6 +23,7 @@ class _LoginScreenState extends State<LoginScreen> {
   final FirebaseAuth auth = FirebaseAuth.instance;
 
   final _key = GlobalKey<FormState>();
+  bool loading = false;
   @override
   void dispose() {
     emailController.dispose();
@@ -124,8 +127,30 @@ class _LoginScreenState extends State<LoginScreen> {
                     height: 25,
                   ),
                   ElevatedButton(
-                    onPressed: () {
-                      if (_key.currentState!.validate()) {}
+                    onPressed: () async {
+                      if (_key.currentState!.validate()) {
+                        setState(() {
+                          loading = true;
+                        });
+                        await auth
+                            .signInWithEmailAndPassword(
+                                email: emailController.text.toString(),
+                                password: passwordController.text.toString())
+                            .then((value) async {
+                          final SharedPreferences prefs =
+                              await SharedPreferences.getInstance();
+                          await prefs.setBool('isLoggedIn', true);
+                          setState(() {
+                            loading = false;
+                          });
+                          removeNextScreen(context, const WelcomeScreen());
+                        }).onError((error, stackTrace) {
+                          setState(() {
+                            loading = false;
+                          });
+                          toast(error.toString());
+                        });
+                      }
                     },
                     style: ElevatedButton.styleFrom(
                         backgroundColor: black,

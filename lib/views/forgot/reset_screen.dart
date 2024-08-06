@@ -1,3 +1,4 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:trial_task_01/constants/constants.dart';
 import 'package:trial_task_01/views/forgot/confirm_screen.dart';
@@ -15,8 +16,8 @@ class _ResetScreenState extends State<ResetScreen> {
   final _key = GlobalKey<FormState>();
   @override
   void dispose() {
-    super.dispose();
     emailController.dispose();
+    super.dispose();
   }
 
   @override
@@ -85,9 +86,13 @@ class _ResetScreenState extends State<ResetScreen> {
                 height: 70,
               ),
               ElevatedButton(
-                onPressed: () {
+                onPressed: () async {
                   if (_key.currentState!.validate()) {
-                    nextScreen(context, const ConfirmScreen());
+                    await FirebaseAuth.instance
+                        .sendPasswordResetEmail(
+                            email: emailController.text.toString())
+                        .then((value) =>
+                            nextScreen(context, const ConfirmScreen()));
                   }
                 },
                 style: ElevatedButton.styleFrom(

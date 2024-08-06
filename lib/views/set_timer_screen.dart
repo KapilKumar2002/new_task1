@@ -1,3 +1,5 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:time_picker_spinner/time_picker_spinner.dart';
 import 'package:trial_task_01/constants/constants.dart';
@@ -12,6 +14,7 @@ class SetTimerScreen extends StatefulWidget {
 }
 
 class _SetTimerScreenState extends State<SetTimerScreen> {
+  final user = FirebaseAuth.instance.currentUser;
   DateTime dateTime = DateTime.now();
   @override
   Widget build(BuildContext context) {
@@ -51,7 +54,7 @@ class _SetTimerScreenState extends State<SetTimerScreen> {
                       });
                     },
                   ),
-                  Text(
+                  const Text(
                     "People who set reminders are 30% more likely to workout regularly. ",
                     style: TextStyle(
                         fontSize: 14, fontWeight: FontWeight.w400, color: grey),
@@ -63,8 +66,14 @@ class _SetTimerScreenState extends State<SetTimerScreen> {
             Padding(
               padding: const EdgeInsets.only(bottom: 20),
               child: ElevatedButton(
-                onPressed: () {
-                  nextScreen(context, const BottomNavigationScreen());
+                onPressed: () async {
+                  await FirebaseFirestore.instance
+                      .collection("users")
+                      .doc(user!.uid)
+                      .update({
+                    "timing": dateTime,
+                  }).then((value) => removeNextScreen(
+                          context, const BottomNavigationScreen()));
                 },
                 style: ElevatedButton.styleFrom(
                     backgroundColor: black,

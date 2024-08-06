@@ -1,5 +1,8 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:trial_task_01/constants/constants.dart';
+import 'package:trial_task_01/services/database_services.dart';
 import 'package:trial_task_01/views/auth/login_screen.dart';
 import 'package:trial_task_01/widgets/continue_with_google_button.dart';
 import 'package:trial_task_01/widgets/custom_text_field.dart';
@@ -15,12 +18,15 @@ class SignUpScreen extends StatefulWidget {
 class _SignUpScreenState extends State<SignUpScreen> {
   TextEditingController emailController = TextEditingController();
   TextEditingController passwordController = TextEditingController();
+  final FirebaseAuth auth = FirebaseAuth.instance;
+  final userCollection = FirebaseFirestore.instance.collection("users");
   final _key = GlobalKey<FormState>();
+  bool loading = false;
   @override
   void dispose() {
-    super.dispose();
     emailController.dispose();
     passwordController.dispose();
+    super.dispose();
   }
 
   @override
@@ -104,18 +110,43 @@ class _SignUpScreenState extends State<SignUpScreen> {
                     height: 25,
                   ),
                   ElevatedButton(
-                    onPressed: () {
+                    onPressed: () async {
                       if (_key.currentState!.validate()) {
-                        nextScreen(context, const LoginScreen());
+                        setState(() {
+                          loading = true;
+                        });
+                        await auth
+                            .createUserWithEmailAndPassword(
+                                email: emailController.text.toString(),
+                                password: passwordController.text.toString())
+                            .then((value) {
+                          if (value.user != null) {
+                            DatabaseServices(value.user!.uid.toString())
+                                .saveData(emailController.text.toString());
+                          }
+                          setState(() {
+                            loading = false;
+                          });
+                          nextScreen(context, const LoginScreen());
+                        }).onError((error, stackTrace) {
+                          toast(error.toString());
+                          setState(() {
+                            loading = false;
+                          });
+                        });
                       }
                     },
                     style: ElevatedButton.styleFrom(
                         backgroundColor: black,
                         minimumSize: Size(width(context), 39)),
-                    child: Text(
-                      "Sign Up",
-                      style: font14w500(color: white),
-                    ),
+                    child: loading
+                        ? const CircularProgressIndicator(
+                            color: white,
+                          )
+                        : Text(
+                            "Sign Up",
+                            style: font14w500(color: white),
+                          ),
                   ),
                   const SizedBox(
                     height: 10,

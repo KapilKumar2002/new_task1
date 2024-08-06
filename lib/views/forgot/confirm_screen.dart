@@ -52,7 +52,7 @@ class _ConfirmScreenState extends State<ConfirmScreen> {
             ),
             ElevatedButton(
               onPressed: () {
-                nextScreen(context, const LoginScreen());
+                removeNextScreen(context, const LoginScreen());
               },
               style: ElevatedButton.styleFrom(
                   backgroundColor: black,

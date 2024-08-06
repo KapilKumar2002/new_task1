@@ -1,5 +1,10 @@
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
+import 'package:google_sign_in/google_sign_in.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:trial_task_01/constants/constants.dart';
+import 'package:trial_task_01/views/auth/login_screen.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -10,6 +15,14 @@ class HomeScreen extends StatefulWidget {
 
 class _HomeScreenState extends State<HomeScreen> {
   int day = 1;
+  Future<bool> logout() async {
+    final SharedPreferences prefs = await SharedPreferences.getInstance();
+    await prefs.setBool('isLoggedIn', false);
+    await FirebaseAuth.instance.signOut();
+    await GoogleSignIn().signOut();
+    return true;
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -23,9 +36,28 @@ class _HomeScreenState extends State<HomeScreen> {
               child: Padding(
                 padding:
                     const EdgeInsets.symmetric(vertical: 25, horizontal: 28),
-                child: Text(
-                  "Day 1 of 30",
-                  style: font24w700(color: white),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Text(
+                      "Day 1 of 30",
+                      style: font24w700(color: white),
+                    ),
+                    IconButton(
+                        onPressed: () {
+                          logout().then((value) {
+                            if (value) {
+                              nextScreen(context, const LoginScreen());
+                            }
+                          });
+                        },
+                        icon: const ImageIcon(
+                          AssetImage(
+                            "assets/images/exit.png",
+                          ),
+                          color: white,
+                        ))
+                  ],
                 ),
               ),
             ),

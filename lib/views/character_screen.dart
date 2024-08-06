@@ -1,3 +1,5 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:trial_task_01/constants/constants.dart';
 import 'package:trial_task_01/views/set_timer_screen.dart';
@@ -11,7 +13,8 @@ class CharacterScreen extends StatefulWidget {
 }
 
 class _CharacterScreenState extends State<CharacterScreen> {
-  int _selectedValue = 1;
+  int _selectedValue = 0;
+  final user = FirebaseAuth.instance.currentUser;
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -122,8 +125,16 @@ class _CharacterScreenState extends State<CharacterScreen> {
             Padding(
               padding: const EdgeInsets.only(bottom: 20),
               child: ElevatedButton(
-                onPressed: () {
-                  nextScreen(context, const SetTimerScreen());
+                onPressed: () async {
+                  if (_selectedValue > 0) {
+                    await FirebaseFirestore.instance
+                        .collection("users")
+                        .doc(user!.uid)
+                        .update({
+                      "buddy": _selectedValue == 0 ? "Female" : "Male"
+                    }).then((value) =>
+                            removeNextScreen(context, const SetTimerScreen()));
+                  }
                 },
                 style: ElevatedButton.styleFrom(
                     backgroundColor: black,
